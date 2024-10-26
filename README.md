@@ -1,6 +1,6 @@
 ---
 
-#Data trasfer to mobile phone with blutooth using nRF52
+# Data trasfer to mobile phone with blutooth using nRF52
 
 This project is a simple BLE (Bluetooth Low Energy) counter for the nRF52 series microcontrollers, using the Bluefruit library. The program broadcasts a counter value that increments every second and sends it as a notification to any connected BLE device.
 
