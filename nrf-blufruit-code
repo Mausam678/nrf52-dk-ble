@@ -1,0 +1,50 @@
+#include <bluefruit.h>
+
+BLEService countService = BLEService(0x180A);                // Custom service UUID
+BLECharacteristic countChar = BLECharacteristic(0x2A56);     // Custom characteristic UUID
+
+unsigned int count = 0;    // Counter variable
+unsigned long previousMillis = 0;  // Timer variable
+
+void setup() {
+  Serial.begin(9600);
+  while (!Serial);
+
+  // Initialize Bluefruit
+  Bluefruit.begin();
+  Bluefruit.setTxPower(4);    // Set max transmission power
+  Bluefruit.setName("nRF52_Count");
+
+  // Configure and start advertising
+  Bluefruit.Advertising.addService(countService);
+  Bluefruit.Advertising.start();
+
+  // Set up the BLE service and characteristic
+  countService.begin();
+  countChar.setProperties(CHR_PROPS_NOTIFY);
+  countChar.setPermission(SECMODE_OPEN, SECMODE_NO_ACCESS);
+  countChar.setFixedLen(4);    // Allocate enough space for a string (up to 4 characters, e.g., "1234")
+  countChar.begin();
+
+  Serial.println("BLE setup done. Waiting for connections...");
+}
+
+void loop() {
+  unsigned long currentMillis = millis();
+
+  // Send count value every 1 second
+  if (currentMillis - previousMillis >= 1000) {
+    previousMillis = currentMillis;
+
+    count++;  // Increment the counter
+
+    // Convert the count to a string
+    char countStr[4];
+    snprintf(countStr, sizeof(countStr), "%u", count);  // Convert count to a string
+
+    // Notify the connected device with the counter value as a string
+    countChar.notify(countStr);
+    Serial.print("Count value sent: ");
+    Serial.println(countStr);
+  }
+}
