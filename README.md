@@ -1,5 +1,3 @@
-Here’s an expanded `README.md` that includes explanations for each part of the code and how it functions.
-
 ---
 
 # BLE Counter with nRF52
